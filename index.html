@@ -57,6 +57,37 @@
     z-index: 0;
   }
 
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(118deg, transparent 0 42px, rgba(56,189,248,0.055) 43px, transparent 44px),
+      linear-gradient(180deg, transparent, rgba(56,189,248,0.035), transparent);
+    background-size: 180px 180px, 100% 100%;
+    opacity: 0.38;
+    transform: translate3d(0,0,0);
+    animation: dataDrift 22s linear infinite;
+    z-index: 0;
+  }
+
+  .neural-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.58;
+    mix-blend-mode: screen;
+  }
+
+  section,
+  footer {
+    z-index: 2;
+  }
+
   .page-progress {
     position: fixed;
     top: 0;
@@ -213,6 +244,11 @@
     50% { opacity: 0.5; transform: scale(0.8); }
   }
 
+  @keyframes dataDrift {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: 180px 180px, 0 0; }
+  }
+
   .hero-name {
     font-family: 'Syne', sans-serif;
     font-size: clamp(3.2rem, 6vw, 6.2rem);
@@ -255,6 +291,19 @@
     line-height: 1.75;
     overflow: hidden;
     animation: fadeUp 0.6s 0.36s ease both;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .terminal-intro::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 0%, rgba(56,189,248,0.08) 42%, transparent 62%);
+    transform: translateX(-120%);
+    animation: terminalSweep 5.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
   }
 
   .terminal-bar {
@@ -342,6 +391,25 @@
     transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
     border: 2px solid transparent;
     box-shadow: 0 14px 30px rgba(56,189,248,0.22);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .btn-primary::before,
+  .btn-outline::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 0%, rgba(255,255,255,0.35) 45%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.65s ease;
+    z-index: -1;
+  }
+
+  .btn-primary:hover::before,
+  .btn-outline:hover::before {
+    transform: translateX(120%);
   }
 
   .btn-primary:hover {
@@ -405,6 +473,9 @@
     font-size: 0.9rem;
     border: 2px solid var(--border);
     transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
   }
 
   .btn-outline:hover {
@@ -757,6 +828,10 @@
     overflow: hidden;
     text-decoration: none;
     display: block;
+    --mx: 50%;
+    --my: 50%;
+    --rx: 0deg;
+    --ry: 0deg;
   }
 
   .projects-grid .project-card:nth-child(3n + 2)::before {
@@ -777,10 +852,31 @@
     transition: opacity 0.3s;
   }
 
+  .projects-grid .project-card::after,
+  .stat-card::after,
+  .stack-category::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(56,189,248,0.18), transparent 34%),
+      linear-gradient(135deg, rgba(255,255,255,0.055), transparent 42%);
+    opacity: 0;
+    transition: opacity 0.28s ease;
+    pointer-events: none;
+  }
+
+  .projects-grid .project-card:hover::after,
+  .stat-card:hover::after,
+  .stack-category:hover::after {
+    opacity: 1;
+  }
+
   .project-card:hover {
     background: var(--card-bg-strong);
     border-color: rgba(56,189,248,0.48);
-    transform: translateY(-4px);
+    transform: perspective(900px) translateY(-4px) rotateX(var(--rx)) rotateY(var(--ry));
     box-shadow: 0 24px 54px rgba(0,0,0,0.34), 0 0 32px rgba(56,189,248,0.18);
   }
 
@@ -954,6 +1050,8 @@
 
   /* FOOTER */
   footer {
+    position: relative;
+    z-index: 2;
     padding: 2.4rem clamp(1rem, 4vw, 4rem);
     text-align: center;
     border-top: 1px solid var(--border);
@@ -986,6 +1084,12 @@
   @keyframes portraitPulse {
     0%, 100% { opacity: 0.55; transform: scale(0.98); }
     50% { opacity: 0.9; transform: scale(1.04); }
+  }
+
+  @keyframes terminalSweep {
+    0%, 42% { transform: translateX(-120%); opacity: 0; }
+    52% { opacity: 1; }
+    68%, 100% { transform: translateX(120%); opacity: 0; }
   }
 
   @keyframes cardIn {
@@ -1146,6 +1250,7 @@
     }
     .cursor-glow { display: none; }
     .deployment-track { animation: none; }
+    .neural-canvas { display: none; }
   }
 
   @media (hover: none), (pointer: coarse) {
@@ -1154,6 +1259,7 @@
 </style>
 </head>
 <body>
+<canvas class="neural-canvas" aria-hidden="true"></canvas>
 <div class="page-progress" aria-hidden="true"></div>
 <div class="cursor-glow" aria-hidden="true"></div>
 
@@ -1549,6 +1655,7 @@
 
   const progress = document.querySelector('.page-progress');
   const cursorGlow = document.querySelector('.cursor-glow');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const updateProgress = () => {
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
     const pct = maxScroll > 0 ? window.scrollY / maxScroll : 0;
@@ -1557,7 +1664,7 @@
   updateProgress();
   window.addEventListener('scroll', updateProgress, { passive: true });
 
-  if (cursorGlow && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  if (cursorGlow && !reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     let glowX = window.innerWidth / 2;
     let glowY = window.innerHeight / 2;
     let targetX = glowX;
@@ -1580,6 +1687,127 @@
       requestAnimationFrame(renderGlow);
     };
     renderGlow();
+  }
+
+  const canvas = document.querySelector('.neural-canvas');
+  if (canvas && !reduceMotion) {
+    const ctx = canvas.getContext('2d');
+    const pointer = { x: window.innerWidth / 2, y: window.innerHeight / 2, active: false };
+    let width = 0;
+    let height = 0;
+    let particles = [];
+
+    const createParticles = () => {
+      const count = window.innerWidth < 720 ? 34 : 68;
+      particles = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.4 + 0.6
+      }));
+    };
+
+    const resizeCanvas = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      createParticles();
+    };
+
+    const drawNetwork = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p, index) => {
+        const dxPointer = pointer.x - p.x;
+        const dyPointer = pointer.y - p.y;
+        const pointerDistance = Math.hypot(dxPointer, dyPointer);
+
+        if (pointer.active && pointerDistance < 220) {
+          p.vx += dxPointer * 0.000018;
+          p.vy += dyPointer * 0.000018;
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.995;
+        p.vy *= 0.995;
+
+        if (p.x < -20) p.x = width + 20;
+        if (p.x > width + 20) p.x = -20;
+        if (p.y < -20) p.y = height + 20;
+        if (p.y > height + 20) p.y = -20;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(56,189,248,0.42)';
+        ctx.fill();
+
+        for (let j = index + 1; j < particles.length; j += 1) {
+          const other = particles[j];
+          const dx = p.x - other.x;
+          const dy = p.y - other.y;
+          const distance = Math.hypot(dx, dy);
+          const maxDistance = 145;
+
+          if (distance < maxDistance) {
+            const alpha = (1 - distance / maxDistance) * 0.14;
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(other.x, other.y);
+            ctx.strokeStyle = `rgba(56,189,248,${alpha})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      });
+
+      requestAnimationFrame(drawNetwork);
+    };
+
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+    window.addEventListener('pointermove', (event) => {
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+      pointer.active = true;
+    }, { passive: true });
+    window.addEventListener('pointerleave', () => {
+      pointer.active = false;
+    });
+
+    resizeCanvas();
+    drawNetwork();
+  }
+
+  if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    document.querySelectorAll('.project-card, .stat-card, .stack-category').forEach((card) => {
+      card.addEventListener('pointermove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const px = x / rect.width;
+        const py = y / rect.height;
+        card.style.setProperty('--mx', `${px * 100}%`);
+        card.style.setProperty('--my', `${py * 100}%`);
+
+        if (card.classList.contains('project-card')) {
+          card.style.setProperty('--rx', `${(0.5 - py) * 5}deg`);
+          card.style.setProperty('--ry', `${(px - 0.5) * 5}deg`);
+        }
+      }, { passive: true });
+
+      card.addEventListener('pointerleave', () => {
+        card.style.setProperty('--mx', '50%');
+        card.style.setProperty('--my', '50%');
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+      });
+    });
   }
 
   document.querySelectorAll('.project-card, .stat-card, .pill, .stack-category').forEach((el, index) => {
