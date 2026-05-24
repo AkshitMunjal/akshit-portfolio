@@ -1256,6 +1256,395 @@
   @media (hover: none), (pointer: coarse) {
     .cursor-glow { display: none; }
   }
+
+  /* ── CERTIFICATIONS ────────────────────────────── */
+  #certifications { position: relative; }
+
+  .cert-grid {
+    width: min(100%, var(--container));
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: clamp(1.2rem, 2.5vw, 2rem);
+  }
+
+  .cert-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: clamp(1.4rem, 2.5vw, 1.9rem);
+    text-decoration: none;
+    color: var(--text);
+    overflow: hidden;
+    isolation: isolate;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.3s ease,
+                border-color 0.3s ease;
+  }
+
+  .cert-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), rgba(56,189,248,0.4));
+    border-radius: 12px 12px 0 0;
+  }
+
+  .cert-shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg,
+      transparent 20%,
+      rgba(56,189,248,0.07) 50%,
+      transparent 80%);
+    transform: translateX(-100%);
+    transition: transform 0s;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .cert-card:hover .cert-shimmer {
+    transform: translateX(100%);
+    transition: transform 0.65s ease;
+  }
+
+  .cert-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(56,189,248,0.45);
+    box-shadow: 0 20px 48px rgba(0,0,0,0.32), 0 0 28px rgba(56,189,248,0.14);
+  }
+
+  .cert-icon-wrap {
+    flex-shrink: 0;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 10px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    transition: background 0.3s, transform 0.3s;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cert-card:hover .cert-icon-wrap {
+    background: rgba(56,189,248,0.18);
+    transform: scale(1.08) rotate(-3deg);
+  }
+
+  .cert-icon { width: 1.5rem; height: 1.5rem; }
+
+  .cert-body { position: relative; z-index: 1; }
+
+  .cert-issuer {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+
+  .cert-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 0.7rem;
+  }
+
+  .cert-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .cert-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 99px;
+    padding: 0.18rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+  }
+
+  .cert-badge::before {
+    content: "";
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  .cert-link-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+
+  .cert-card:hover .cert-link-label { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .cert-card { gap: 1rem; padding: 1.2rem; }
+    .cert-icon-wrap { width: 2.6rem; height: 2.6rem; }
+  }
+
+
+  /* ══════════════════════════════════════════════
+     AMBIENT ENTRY ANIMATIONS
+     All elements animate in once when page loads
+  ══════════════════════════════════════════════ */
+
+  /* -- Floating orbs behind hero ----------------- */
+  .ambient-orb {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+    filter: blur(60px);
+    opacity: 0;
+    animation: orbFloat var(--orb-duration, 18s) var(--orb-delay, 0s) ease-in-out infinite,
+               orbFadeIn 1.8s var(--orb-fadein-delay, 0.3s) ease forwards;
+  }
+
+  @keyframes orbFadeIn {
+    from { opacity: 0; transform: scale(0.7); }
+    to   { opacity: var(--orb-opacity, 0.22); transform: scale(1); }
+  }
+
+  @keyframes orbFloat {
+    0%,100% { transform: translate(0, 0) scale(1); }
+    25%     { transform: translate(var(--orb-dx1, 30px), var(--orb-dy1, -25px)) scale(1.06); }
+    50%     { transform: translate(var(--orb-dx2, -20px), var(--orb-dy2, 20px)) scale(0.96); }
+    75%     { transform: translate(var(--orb-dx3, 15px), var(--orb-dy3, 15px)) scale(1.03); }
+  }
+
+  /* -- Nav slides down --------------------------- */
+  nav {
+    animation: navSlideDown 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes navSlideDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+  }
+
+  /* -- Hero content cascades in ------------------ */
+  .hero-tag    { animation: heroFadeUp 0.7s 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+  .hero-name   { animation: heroFadeUp 0.7s 0.58s cubic-bezier(0.22,1,0.36,1) both; }
+  .hero-title  { animation: heroFadeUp 0.7s 0.70s cubic-bezier(0.22,1,0.36,1) both; }
+  .hero-desc   { animation: heroFadeUp 0.7s 0.80s cubic-bezier(0.22,1,0.36,1) both; }
+  .terminal-intro { animation: heroFadeUp 0.7s 0.90s cubic-bezier(0.22,1,0.36,1) both; }
+  .hero-ctas   { animation: heroFadeUp 0.7s 1.00s cubic-bezier(0.22,1,0.36,1) both; }
+  .hero-metrics{ animation: heroFadeUp 0.7s 1.10s cubic-bezier(0.22,1,0.36,1) both; }
+
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(28px); filter: blur(4px); }
+    to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+  }
+
+  /* -- Hero photo swings in from right ----------- */
+  .hero-photo-wrap {
+    animation: photoSwingIn 1.0s 0.6s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes photoSwingIn {
+    from { opacity: 0; transform: translateX(60px) scale(0.9) rotateY(-12deg); filter: blur(6px); }
+    to   { opacity: 1; transform: translateX(0)    scale(1)   rotateY(0);      filter: blur(0);   }
+  }
+
+  /* -- Floating data tags around hero ------------ */
+  .data-tag {
+    position: fixed;
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(0.55rem, 1vw, 0.72rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: rgba(56,189,248,0.55);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    animation:
+      tagFadeIn 1.2s var(--tag-delay, 1s) ease forwards,
+      tagDrift var(--tag-duration, 14s) var(--tag-delay, 1s) ease-in-out infinite;
+    white-space: nowrap;
+  }
+
+  @keyframes tagFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes tagDrift {
+    0%,100% { transform: translate(0, 0); }
+    33%     { transform: translate(var(--tag-dx, 8px), var(--tag-dy, -12px)); }
+    66%     { transform: translate(calc(var(--tag-dx, 8px) * -0.6), var(--tag-dy, -12px)); }
+  }
+
+  /* -- Animated gradient ring on photo frame ----- */
+  @keyframes ringRotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  .hero-photo-frame {
+    animation: portraitFloat 7s ease-in-out infinite, ringRotateAura 12s linear infinite;
+  }
+  @keyframes ringRotateAura {
+    from { background: conic-gradient(from 0deg, rgba(56,189,248,0.35), var(--accent), rgba(56,189,248,0.38), var(--accent)); }
+    to   { background: conic-gradient(from 360deg, rgba(56,189,248,0.35), var(--accent), rgba(56,189,248,0.38), var(--accent)); }
+  }
+
+  /* -- Glowing dots that orbit the page ---------- */
+  .orbit-dot {
+    position: fixed;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    box-shadow: 0 0 8px 2px rgba(56,189,248,0.6);
+    animation: orbitPath var(--od-dur, 22s) var(--od-delay, 0s) linear infinite,
+               orbitFadeIn 1s var(--od-fadein, 1.5s) ease forwards;
+    transform-origin: var(--od-origin-x, 50vw) var(--od-origin-y, 50vh);
+  }
+
+  @keyframes orbitFadeIn {
+    from { opacity: 0; }
+    to   { opacity: var(--od-opacity, 0.7); }
+  }
+
+  @keyframes orbitPath {
+    from { transform: rotate(0deg) translateX(var(--od-radius, 120px)) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(var(--od-radius, 120px)) rotate(-360deg); }
+  }
+
+  /* -- Section headers animate in on scroll ------- */
+  .section-title {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1),
+                transform 0.8s cubic-bezier(0.22,1,0.36,1);
+  }
+  .section-title.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* -- Pills wave in on scroll ------------------- */
+  .pill {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22,1,0.36,1);
+  }
+  .pill.in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* -- Project cards lift in --------------------- */
+  .project-card {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1),
+                transform 0.6s cubic-bezier(0.22,1,0.36,1),
+                border-color 0.28s ease, background-color 0.28s ease,
+                box-shadow 0.28s ease;
+  }
+  .project-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* keep hover transforms working after in-view */
+  .project-card.in-view:hover {
+    transform: perspective(900px) translateY(-4px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  }
+
+  /* -- Stat cards pop in ------------------------- */
+  .stat-card {
+    opacity: 0;
+    transform: scale(0.9) translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1),
+                border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .stat-card.in-view {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  .stat-card.in-view:hover {
+    transform: translateY(-4px) !important;
+  }
+
+  /* -- Cert cards slide up ----------------------- */
+  .cert-card {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1),
+                transform 0.6s cubic-bezier(0.22,1,0.36,1),
+                border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .cert-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .cert-card.in-view:hover {
+    transform: translateY(-5px) !important;
+  }
+
+  /* -- Contact links bounce in ------------------- */
+  .contact-link {
+    opacity: 0;
+    transform: translateY(18px) scale(0.95);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22,1,0.36,1),
+                border-color 0.25s ease, box-shadow 0.25s ease,
+                color 0.25s ease, background-color 0.25s ease;
+  }
+  .contact-link.in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .contact-link.in-view:hover {
+    transform: translateY(-3px) !important;
+  }
+
+  /* -- About text slides in from left ------------ */
+  .about-text {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                transform 0.75s cubic-bezier(0.22,1,0.36,1);
+  }
+  .about-text.in-view { opacity: 1; transform: translateX(0); }
+
+  /* Reduce motion: skip everything */
+  @media (prefers-reduced-motion: reduce) {
+    .ambient-orb, .data-tag, .orbit-dot { display: none !important; }
+    nav, .hero-tag, .hero-name, .hero-title, .hero-desc,
+    .terminal-intro, .hero-ctas, .hero-metrics, .hero-photo-wrap,
+    .section-title, .pill, .project-card, .stat-card,
+    .cert-card, .contact-link, .about-text {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
 </style>
 
 <!-- THREE.js for 3D intro -->
@@ -1648,6 +2037,7 @@
     <li><a href="#about">About</a></li>
     <li><a href="#stack">Stack</a></li>
     <li><a href="#experience">Experience</a></li>
+    <li><a href="#certifications">Certifications</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -1861,6 +2251,57 @@
         <span class="tech-tag">Business Intelligence</span>
       </div>
     </div>
+
+  </div>
+</section>
+
+
+<!-- CERTIFICATIONS -->
+<section id="certifications" class="stack-bg">
+  <div class="section-label">Verified Skills</div>
+  <h2 class="section-title">Certifications</h2>
+  <div class="cert-grid reveal">
+
+    <a class="cert-card" href="https://www.hackerrank.com/certificates/84e67913aa34" target="_blank" rel="noopener noreferrer">
+      <div class="cert-shimmer"></div>
+      <div class="cert-icon-wrap">
+        <svg class="cert-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 7C4 5.89543 4.89543 5 6 5H18C19.1046 5 20 5.89543 20 7V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V7Z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 10H16M8 14H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="12" cy="22" r="1" fill="currentColor"/>
+          <path d="M12 19V21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <div class="cert-issuer">HackerRank</div>
+        <div class="cert-name">SQL (Basic) Certificate</div>
+        <div class="cert-meta">
+          <span class="cert-badge">Verified</span>
+          <span class="cert-link-label">View Certificate ↗</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="cert-card" href="https://www.hackerrank.com/certificates/f657fcb7b3e7" target="_blank" rel="noopener noreferrer">
+      <div class="cert-shimmer"></div>
+      <div class="cert-icon-wrap">
+        <svg class="cert-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 7C4 5.89543 4.89543 5 6 5H18C19.1046 5 20 5.89543 20 7V17C20 18.1046 19.1046 19 18 19H6C4.89543 19 4 18.1046 4 17V7Z" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 10H16M8 14H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M15 13L17 15L21 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="22" r="1" fill="currentColor"/>
+          <path d="M12 19V21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="cert-body">
+        <div class="cert-issuer">HackerRank</div>
+        <div class="cert-name">SQL (Intermediate) Certificate</div>
+        <div class="cert-meta">
+          <span class="cert-badge">Verified</span>
+          <span class="cert-link-label">View Certificate ↗</span>
+        </div>
+      </div>
+    </a>
 
   </div>
 </section>
@@ -2218,6 +2659,116 @@
     });
   }, { threshold: 0.1 });
   reveals.forEach(r => observer.observe(r));
+
+  /* ══════════════════════════════════════════════
+     AMBIENT ANIMATIONS ENGINE
+  ══════════════════════════════════════════════ */
+  (function() {
+    if (reduceMotion) return;
+
+    /* 1 ── Floating background orbs */
+    const orbDefs = [
+      { w:520, h:420, top:'4%',  left:'2%',  color:'rgba(56,189,248,0.18)', op:0.22, dur:'20s', delay:'0s',   dx1:'40px', dy1:'-30px', dx2:'-28px', dy2:'22px',  dx3:'18px', dy3:'18px', fi:'0.2s' },
+      { w:380, h:360, top:'8%',  right:'3%', color:'rgba(56,189,248,0.12)', op:0.16, dur:'26s', delay:'3s',   dx1:'-35px',dy1:'28px',  dx2:'22px',  dy2:'-18px', dx3:'-14px',dy3:'12px', fi:'0.8s' },
+      { w:300, h:280, top:'55%', left:'8%',  color:'rgba(56,189,248,0.10)', op:0.14, dur:'32s', delay:'6s',   dx1:'25px', dy1:'-20px', dx2:'-18px', dy2:'15px',  dx3:'12px', dy3:'10px', fi:'1.2s' },
+      { w:240, h:220, top:'70%', right:'6%', color:'rgba(56,189,248,0.09)', op:0.12, dur:'24s', delay:'2s',   dx1:'-20px',dy1:'18px',  dx2:'15px',  dy2:'-12px', dx3:'-10px',dy3:'8px',  fi:'0.5s' },
+    ];
+    orbDefs.forEach(o => {
+      const el = document.createElement('div');
+      el.className = 'ambient-orb';
+      Object.assign(el.style, {
+        width: o.w+'px', height: o.h+'px',
+        top: o.top, left: o.left || 'auto', right: o.right || 'auto',
+        background: o.color,
+        '--orb-opacity': o.op,
+        '--orb-duration': o.dur,
+        '--orb-delay': o.delay,
+        '--orb-fadein-delay': o.fi,
+        '--orb-dx1': o.dx1, '--orb-dy1': o.dy1,
+        '--orb-dx2': o.dx2, '--orb-dy2': o.dy2,
+        '--orb-dx3': o.dx3, '--orb-dy3': o.dy3,
+      });
+      document.body.appendChild(el);
+    });
+
+    /* 2 ── Floating data tags */
+    if (window.innerWidth >= 900) {
+      const tags = [
+        { text: 'model.fit()',       top: '18%', left: '2%',   delay:'1.4s', dur:'16s', dx: '12px', dy:'-16px' },
+        { text: 'import pandas',     top: '28%', left: '1.5%', delay:'2.1s', dur:'19s', dx: '-8px', dy: '14px' },
+        { text: 'RAG Pipeline',      top: '40%', left: '1%',   delay:'3.0s', dur:'22s', dx: '10px', dy:'-10px' },
+        { text: 'LangChain',         top: '54%', left: '2%',   delay:'1.8s', dur:'17s', dx: '-6px', dy: '12px' },
+        { text: 'y_pred = model',    top: '65%', left: '1.5%', delay:'2.6s', dur:'20s', dx: '8px',  dy:'-8px'  },
+        { text: 'FastAPI',           top: '20%', right:'2%',   delay:'1.6s', dur:'18s', dx:'-10px', dy:'14px'  },
+        { text: 'XGBoost()',         top: '33%', right:'1.5%', delay:'2.4s', dur:'21s', dx: '6px',  dy:'-10px' },
+        { text: 'torch.nn.Module',   top: '48%', right:'1%',   delay:'3.2s', dur:'25s', dx:'-8px',  dy: '8px'  },
+        { text: 'MLflow.log()',      top: '60%', right:'2%',   delay:'1.2s', dur:'15s', dx: '10px', dy:'-14px' },
+        { text: 'vectorstore.query', top: '72%', right:'1.5%', delay:'2.8s', dur:'23s', dx:'-6px',  dy: '10px' },
+      ];
+      tags.forEach(t => {
+        const el = document.createElement('div');
+        el.className = 'data-tag';
+        el.textContent = t.text;
+        Object.assign(el.style, {
+          top: t.top, left: t.left || 'auto', right: t.right || 'auto',
+          '--tag-delay': t.delay,
+          '--tag-duration': t.dur,
+          '--tag-dx': t.dx,
+          '--tag-dy': t.dy,
+        });
+        document.body.appendChild(el);
+      });
+    }
+
+    /* 3 ── Orbit dots (desktop only) */
+    if (window.innerWidth >= 768) {
+      const dotDefs = [
+        { radius:'160px', dur:'28s', delay:'0s',   fadein:'1.5s', opacity:'0.65', ox:'82vw', oy:'22vh' },
+        { radius:'220px', dur:'38s', delay:'5s',   fadein:'2.0s', opacity:'0.4',  ox:'15vw', oy:'75vh' },
+        { radius:'110px', dur:'18s', delay:'2.5s', fadein:'1.8s', opacity:'0.5',  ox:'88vw', oy:'60vh' },
+      ];
+      dotDefs.forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'orbit-dot';
+        Object.assign(el.style, {
+          '--od-radius': d.radius,
+          '--od-dur': d.dur,
+          '--od-delay': d.delay,
+          '--od-fadein': d.fadein,
+          '--od-opacity': d.opacity,
+          '--od-origin-x': d.ox,
+          '--od-origin-y': d.oy,
+          left: d.ox,
+          top: d.oy,
+        });
+        document.body.appendChild(el);
+      });
+    }
+
+    /* 4 ── IntersectionObserver for scroll-triggered element animations */
+    const animateIn = (selector, delayFn) => {
+      const els = document.querySelectorAll(selector);
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const el = e.target;
+          if (delayFn) el.style.transitionDelay = delayFn(el, [...els].indexOf(el));
+          el.classList.add('in-view');
+          io.unobserve(el);
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+      els.forEach(el => io.observe(el));
+    };
+
+    animateIn('.section-title');
+    animateIn('.about-text');
+    animateIn('.stat-card',     (el, i) => (i * 0.1) + 's');
+    animateIn('.pill',          (el, i) => (i * 0.04) + 's');
+    animateIn('.project-card',  (el, i) => (i * 0.08) + 's');
+    animateIn('.cert-card',     (el, i) => (i * 0.12) + 's');
+    animateIn('.contact-link',  (el, i) => (i * 0.08) + 's');
+  })();
+
 </script>
 
 </body>
