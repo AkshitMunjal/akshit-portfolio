@@ -425,6 +425,7 @@
   .deployment-strip {
     width: min(100%, var(--container));
     margin: 1.8rem auto 0;
+    max-width: calc(100vw - 2rem);
     overflow: hidden;
     border: 1px solid rgba(148,163,184,0.18);
     border-radius: 8px;
@@ -1152,6 +1153,10 @@
 
   @media (max-width: 900px) {
     html { scroll-padding-top: 110px; }
+    /* photo is now on top, animate from above not from side */
+    .hero-photo-wrap {
+      animation: photoDropIn 0.9s 0.4s cubic-bezier(0.22,1,0.36,1) both !important;
+    }
     nav {
       flex-direction: column;
       align-items: stretch;
@@ -1183,7 +1188,7 @@
     .hero {
       grid-template-columns: 1fr;
       min-height: unset;
-      padding: 8rem 1rem 5rem;
+      padding: 6rem 1.25rem 4rem;
       text-align: center;
       width: 100%;
     }
@@ -1202,14 +1207,17 @@
       margin-left: auto;
       margin-right: auto;
       width: 100%;
+      max-width: 100%;
+      gap: 0.5rem;
     }
-    .hero-photo-wrap { order: -1; margin-bottom: 2rem; }
-    .hero-photo-frame { width: min(240px, 66vw); }
+    .hero-photo-wrap { order: -1; margin-bottom: 3.5rem; }
+    .hero-photo-frame { width: min(180px, 50vw); }
     .photo-badge {
       left: 50%;
       transform: translateX(-50%);
-      bottom: -18px;
+      bottom: -2.2rem;
       width: max-content;
+      white-space: nowrap;
     }
     section { padding: 5rem 1rem; }
     .about-grid { grid-template-columns: 1fr; }
@@ -1229,7 +1237,7 @@
   }
 
   @media (max-width: 640px) {
-    .hero-name { font-size: 2.65rem; }
+    .hero-name { font-size: clamp(2.2rem, 9vw, 2.65rem); line-height: 1.05; }
     .hero-title { font-size: 0.98rem; }
     .hero-ctas a { width: 100%; text-align: center; }
     .terminal-intro { font-size: 0.76rem; padding: 0.9rem; }
@@ -1248,6 +1256,11 @@
     .hero-metric span { font-size: 0.66rem; }
     .hero-metric { padding: 0.55rem 0.4rem; }
     .project-arrow { top: 1.15rem; right: 1.15rem; }
+    .hero-photo-frame { padding: 5px; }
+    .hero-photo-frame::before { inset: -10px; }
+    .hero-name { font-size: clamp(2.4rem, 8vw, 2.8rem); line-height: 1.05; }
+    .hero-tag { font-size: 0.78rem; padding: 0.3rem 0.85rem; }
+    .hero-desc { font-size: 0.97rem; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1513,6 +1526,11 @@
     0%,100% { transform: translate(0, 0); }
     33%     { transform: translate(var(--tag-dx, 8px), var(--tag-dy, -12px)); }
     66%     { transform: translate(calc(var(--tag-dx, 8px) * -0.6), var(--tag-dy, -12px)); }
+  }
+
+  @keyframes photoDropIn {
+    from { opacity: 0; transform: translateY(-40px) scale(0.9); filter: blur(4px); }
+    to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
   }
 
   /* -- Animated gradient ring on photo frame ----- */
@@ -1797,9 +1815,143 @@
   z-index: 4;
 }
 
-/* Reduced motion or mobile: skip intro */
-@media (prefers-reduced-motion: reduce), (max-width: 767px) {
+/* Reduced motion: skip 3D intro, show mobile intro instead */
+@media (prefers-reduced-motion: reduce) {
   #intro-overlay { display: none !important; }
+}
+/* Desktop-only 3D overlay – hide on mobile, mobile has its own */
+@media (max-width: 767px) {
+  #intro-overlay { display: none !important; }
+}
+
+/* ── MOBILE INTRO OVERLAY ─────────────────────────────────────── */
+#mobile-intro {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #080c12;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: all;
+}
+@media (max-width: 767px) {
+  #mobile-intro { display: flex; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #mobile-intro { display: none !important; }
+}
+
+#mobile-intro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(56,189,248,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,189,248,0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.5;
+}
+
+.m-intro-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.m-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #38bdf8;
+  opacity: 0;
+  animation: mParticleFly var(--dur, 2.5s) var(--delay, 0s) ease-out forwards;
+}
+@keyframes mParticleFly {
+  0%   { opacity: 0;    transform: translate(var(--sx,0), var(--sy,0)) scale(0.5); }
+  20%  { opacity: 0.8; }
+  100% { opacity: 0;    transform: translate(var(--ex,0), var(--ey,0)) scale(0); }
+}
+
+.m-intro-text {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+}
+.m-intro-initials {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(4.5rem, 22vw, 7rem);
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(56,189,248,0.9);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.5) translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22,1,0.36,1);
+  text-shadow: 0 0 60px rgba(56,189,248,0.4);
+}
+.m-intro-initials.show {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+.m-intro-sub {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(56,189,248,0.7);
+  margin-top: 0.75rem;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s 0.2s ease, transform 0.6s 0.2s ease;
+}
+.m-intro-sub.show { opacity: 1; transform: translateY(0); }
+
+.m-intro-bar {
+  position: absolute;
+  bottom: clamp(2rem, 8vw, 3.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 2px;
+  background: rgba(56,189,248,0.15);
+  border-radius: 99px;
+  overflow: hidden;
+  z-index: 10;
+}
+.m-intro-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(56,189,248,0.6), #38bdf8);
+  border-radius: 99px;
+  box-shadow: 0 0 12px rgba(56,189,248,0.5);
+  transition: width 0.1s linear;
+}
+#mobile-intro.exit {
+  animation: mIntroExit 0.7s cubic-bezier(0.7,0,1,1) forwards;
+}
+@keyframes mIntroExit {
+  0%   { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.1); pointer-events: none; }
+}
+/* Scan lines */
+#mobile-intro::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(56,189,248,0.015) 3px,
+    rgba(56,189,248,0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 5;
 }
 </style>
 </head>
@@ -1819,9 +1971,73 @@
   </div>
 </div>
 
+<!-- MOBILE INTRO (CSS-only, no Three.js) -->
+<div id="mobile-intro" aria-hidden="true">
+  <div class="m-intro-particles" id="m-particles"></div>
+  <div class="m-intro-text">
+    <div class="m-intro-initials" id="m-initials">AM.</div>
+    <div class="m-intro-sub" id="m-sub">AI / ML Engineer</div>
+  </div>
+  <div class="m-intro-bar"><div class="m-intro-fill" id="m-fill"></div></div>
+</div>
+
+<script>
+// ── Mobile intro (canvas-free, plays on phones) ──────────────────
+(function() {
+  if (window.innerWidth >= 768) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const overlay  = document.getElementById('mobile-intro');
+  const initials = document.getElementById('m-initials');
+  const sub      = document.getElementById('m-sub');
+  const fill     = document.getElementById('m-fill');
+  const ptWrap   = document.getElementById('m-particles');
+
+  document.body.style.overflow = 'hidden';
+
+  // Spawn simple CSS particles
+  const COLS = ['#38bdf8','rgba(56,189,248,0.7)','rgba(56,189,248,0.4)'];
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'm-particle';
+    const sx = (Math.random() * 100).toFixed(1) + 'vw';
+    const sy = (Math.random() * 100).toFixed(1) + 'vh';
+    const ex = ((Math.random() - 0.5) * 40).toFixed(1) + 'vw';
+    const ey = ((Math.random() - 0.5) * 40).toFixed(1) + 'vh';
+    const dur = (1.8 + Math.random() * 1.4).toFixed(2) + 's';
+    const delay = (Math.random() * 1.2).toFixed(2) + 's';
+    const size = Math.random() > 0.5 ? '3px' : '2px';
+    p.style.cssText = `left:${sx};top:${sy};--sx:0;--sy:0;--ex:${ex};--ey:${ey};--dur:${dur};--delay:${delay};width:${size};height:${size};background:${COLS[i%3]}`;
+    ptWrap.appendChild(p);
+  }
+
+  const DURATION = 2400;
+  let start = null;
+
+  // Show text early
+  setTimeout(() => { initials.classList.add('show'); sub.classList.add('show'); }, 350);
+
+  function tick(ts) {
+    if (!start) start = ts;
+    const t = Math.min((ts - start) / DURATION, 1);
+    fill.style.width = (t * 100) + '%';
+    if (t < 1) {
+      requestAnimationFrame(tick);
+    } else {
+      overlay.classList.add('exit');
+      overlay.addEventListener('animationend', () => {
+        overlay.remove();
+        document.body.style.overflow = '';
+      }, { once: true });
+    }
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+
 <script>
 (function () {
-  // Skip on mobile (<600px) or reduced motion – must match the CSS rule
+  // Skip on mobile (<768px) or reduced motion – must match the CSS rule
   if (window.innerWidth < 768) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
